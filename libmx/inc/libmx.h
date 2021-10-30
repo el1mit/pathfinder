@@ -1,17 +1,11 @@
 #ifndef LIBMX_H
 #define LIBMX_H
 
-#include <io.h> //#include <unistd.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <fcntl.h>
-#include <malloc.h> //#include <malloc/malloc.h>
-
-#define write _write
-#define read _read
-#define open _open
-#define close _close
-#define malloc_size _msize
+#include <malloc/malloc.h>
 
 // utils
 void mx_printchar(char c);
