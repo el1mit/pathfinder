@@ -19,13 +19,14 @@ static char** first_last_name(t_node* node) {
 static char** mx_get_names(t_node* paths) {
     int i = 0;
     t_node* path = paths;
-    for (; path != NULL; i++)
+    for (; path != NULL; i++) {
         path = path->parent;
+    }
 
     char** names = (char**)malloc((i + 1) * sizeof(char*));
-
-    for (int j = 0; j <= i; j++)
+    for (int j = 0; j <= i; j++) {
         names[j] = NULL;
+    }
 
     path = paths;
     for (int j = 0; j < i; j++) {
@@ -67,8 +68,9 @@ static void print_node(t_node* node) {
     mx_printstr("Route: ");
     for (int i = arr_size - 1; i >= 0; i--) {
         mx_printstr(names_arr[i]);
-        if (i - 1 >= 0)
+        if (i - 1 >= 0) {
             mx_printstr(" -> ");
+        }
     }
 
     if (arr_size == 2) {
@@ -87,8 +89,9 @@ static void print_node(t_node* node) {
 
         for (int i = arr_size - 2; i >= 0; i--) {
             mx_printint(int_arr[i]);
-            if (i - 1 >= 0)
+            if (i - 1 >= 0) {
                 mx_printstr(" + ");
+            }
         }
         mx_printstr(" = ");
         int sum = 0;
@@ -101,13 +104,12 @@ static void print_node(t_node* node) {
 }
 
 static void sort_paths(t_node** paths, char** islands) {
-
     for (int i = 0; paths[i + 1] != NULL; i++) {
 
         char** paths1 = first_last_name(paths[i]);
         char** paths2 = first_last_name(paths[i + 1]);
         if (mx_strcmp(paths1[1], paths2[1]) == 0
-            && mx_strcmp(paths1[0], paths2[0]) == 0) {
+         && mx_strcmp(paths1[0], paths2[0]) == 0) {
 
             t_node* temp1 = paths[i];
             t_node* temp2 = paths[i + 1];
@@ -118,14 +120,12 @@ static void sort_paths(t_node** paths, char** islands) {
             for (int b = 0; names1[b] != NULL && names2[b] != NULL; b++) {
                 if (mx_strcmp(names1[b], names2[b]) != 0) {
 
-
                     for (int j = 0; islands[j] != NULL; j++) {
                         if (mx_strcmp(islands[j], names1[b]) == 0) {
                             break;
                         }
                         index1++;
                     }
-
 
                     for (int j = 0; islands[j] != NULL; j++) {
                         if (mx_strcmp(islands[j], names2[b]) == 0) {
@@ -170,15 +170,18 @@ static bool mx_compare_paths(t_node* node1, t_node* node2, t_node** res_temp) {
     char** temp_name1 = first_last_name(temp_node1);
     char** temp_name2 = first_last_name(temp_node2);
 
-    if ((mx_strcmp(temp_name1[0], temp_name2[0]) == 0 && mx_strcmp(temp_name1[1], temp_name2[1]) == 0)) {
+    if ((mx_strcmp(temp_name1[0], temp_name2[0]) == 0 
+      && mx_strcmp(temp_name1[1], temp_name2[1]) == 0)) {
         if (length1 > length2) {
             return false;
         }
     }
-    else if ((mx_strcmp(temp_name1[1], temp_name2[0]) == 0 && mx_strcmp(temp_name1[0], temp_name2[1]) == 0)) {
+    else if ((mx_strcmp(temp_name1[1], temp_name2[0]) == 0 
+           && mx_strcmp(temp_name1[0], temp_name2[1]) == 0)) {
         if (res_temp == NULL) {
-            if (length1 >= length2)
+            if (length1 >= length2) {
                 return false;
+            }
             return true;
         }
         for (int i = 0; res_temp[i] != NULL; i++) {
@@ -190,7 +193,6 @@ static bool mx_compare_paths(t_node* node1, t_node* node2, t_node** res_temp) {
     }
 
     return true;
-
 }
 
 void print_result(t_node** res, int size, char** islands) {

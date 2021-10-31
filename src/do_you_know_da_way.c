@@ -10,7 +10,7 @@ static t_node* new_node(int to_parent, int all_way, char* name) {
     return temp;
 }
 
-t_node** generate_successors(int** arr, t_node* parent, char** islands) {
+static t_node** generate_successors(int** arr, t_node* parent, char** islands) {
     int index = 0;
     int islands_num = 0;
     for (; mx_strcmp(islands[index], parent->name) != 0; index++);

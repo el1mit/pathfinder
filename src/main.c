@@ -50,6 +50,7 @@ int main(int argc, char *argv[]) {
 		mx_strdel(&(bridges->point2));
 	}
 	mx_strdel(&str_from_file);
+    
 	return 0;
 }
 

@@ -16,8 +16,8 @@ void pop(t_queue** head) {
 
 void push(t_queue** head, t_node* node) {
     t_queue* start = (*head);
-
     t_queue* temp = newNode(node);
+
     if ((*head) == NULL) {
         (*head) = temp;
         return;
@@ -27,7 +27,6 @@ void push(t_queue** head, t_node* node) {
         (*head) = temp;
     }
     else {
-
         while (start->next != NULL &&
             start->next->priority < node->all_way) {
             start = start->next;
