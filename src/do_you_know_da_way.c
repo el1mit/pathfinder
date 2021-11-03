@@ -1,8 +1,8 @@
 #include "pathfinder.h"
 
-static t_node* new_node(int to_parent, int all_way, char* name) {
+static t_node* new_node(int len_to_parent, int all_way, char* name) {
     t_node* temp = (t_node*)malloc(sizeof(t_node));
-    temp->to_parent = to_parent;
+    temp->len_to_parent = len_to_parent;
     temp->all_way = all_way;
     temp->name = mx_strdup(name);
     temp->parent = NULL;
@@ -68,8 +68,9 @@ static t_node** generate_successors(int** arr, t_node* parent, char** islands) {
     return successors_res;
 }
 
-t_node** find_path(int** arr, char** islands, int cur_x, int goal_x) {
-    t_node* way = new_node(0, 0, islands[cur_x]);
+// A* algorithm
+t_node** find_path(int** arr, char** islands, int from, int to) {
+    t_node* way = new_node(0, 0, islands[from]);
     t_queue* queue = newNode(way);
     t_queue* queue_close = newNode(way);
 
@@ -81,6 +82,7 @@ t_node** find_path(int** arr, char** islands, int cur_x, int goal_x) {
         paths[i] = (t_node*)malloc(sizeof(t_node));
         paths[i] = NULL;
     }
+
     int paths_index = 0;
     int check = 0;
 
@@ -96,8 +98,9 @@ t_node** find_path(int** arr, char** islands, int cur_x, int goal_x) {
                 break;
             temp = temp->parent;
         }
-        if (j >= islands_num)
+        if (j >= islands_num) {
             continue;
+        }
 
         bool in_islands = false;
         for (int h = 0; h < islands_num; h++) {
@@ -110,13 +113,12 @@ t_node** find_path(int** arr, char** islands, int cur_x, int goal_x) {
         }
 
         t_node** successors = generate_successors(arr, way, islands);
-
         for (int i = 0; successors[i] != NULL; i++) {
             successors[i]->parent = way;
         }
 
         for (int i = 0; successors[i] != NULL; i++) {
-            if (mx_strcmp(successors[i]->name, islands[goal_x]) == 0) {
+            if (mx_strcmp(successors[i]->name, islands[to]) == 0) {
                 paths[paths_index] = successors[i];
                 paths_index++;
             }

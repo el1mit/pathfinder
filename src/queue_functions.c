@@ -8,12 +8,6 @@ t_queue* newNode(t_node* node) {
     return temp;
 }
 
-void pop(t_queue** head) {
-    t_queue* temp = *head;
-    (*head) = (*head)->next;
-    free(temp);
-}
-
 void push(t_queue** head, t_node* node) {
     t_queue* start = (*head);
     t_queue* temp = newNode(node);
@@ -35,6 +29,12 @@ void push(t_queue** head, t_node* node) {
         temp->next = start->next;
         start->next = temp;
     }
+}
+
+void pop(t_queue** head) {
+    t_queue* temp = *head;
+    (*head) = (*head)->next;
+    free(temp);
 }
 
 int isEmpty(t_queue** head) {
