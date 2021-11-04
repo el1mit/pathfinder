@@ -171,7 +171,7 @@ void find_and_print_paths(char **islands, int **adjacency_matrix, int islands_co
     }
 
     t_node** result = (t_node**)malloc((counter + 1) * sizeof(t_node*));
-    for (int i = 0; i < counter; j++) {
+    for (int i = 0; i < counter; i++) {
         result[i] = NULL;
     }
 
