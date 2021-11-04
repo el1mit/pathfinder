@@ -15,7 +15,7 @@ static char** from_to(t_node* node) {
     return result;
 }
 
-static char** mx_get_names(t_node* paths) {
+static char** get_path_names(t_node* paths) {
     int i = 0;
     t_node* path = paths;
     for (; path != NULL; i++) {
@@ -52,8 +52,8 @@ void sort_paths(t_node** paths, char** islands) {
 
             t_node* temp1 = paths[i];
             t_node* temp2 = paths[i + 1];
-            char** names1 = mx_get_names(temp1);
-            char** names2 = mx_get_names(temp2);
+            char** names1 = get_path_names(temp1);
+            char** names2 = get_path_names(temp2);
             int index1 = 0;
             int index2 = 0;
             

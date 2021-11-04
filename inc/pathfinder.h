@@ -28,7 +28,7 @@ void check_bridges(t_bridge* list, int received_count);
 //pathfinding
 char **islands_list(t_bridge* bridges, int islands_count);
 int **create_adjacency_matrix(t_bridge *list, char **islands, int islands_count);
-t_node** find_path(int** arr, char** islands, int cur_x, int goal_x);
+void find_and_print_paths(char **islands, int **adjacency_matrix, int islands_count);
 
 //output
 void print_result(t_node** res, int size, char** islands);

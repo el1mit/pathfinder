@@ -15,38 +15,48 @@ static char** from_to(t_node* node) {
     return result;
 }
 
-static void print_path(t_node* node) {
+static void print_from_to(t_node *node) {
     char **names = from_to(node);
-
     mx_printstr("========================================\n");
     mx_printstr("Path: ");
     mx_printstr(names[1]);
     mx_printstr(" -> ");
     mx_printstr(names[0]);
     mx_printchar('\n');
+}
 
-    int arr_size = 0;
+static void print_route(t_node *node) {
+    int size = 0;
     t_node* temp = node;
-    for (; temp != NULL; arr_size++) {
+    for (; temp != NULL; size++) {
         temp = temp->parent;
     }
 
     temp = node;
-    char** names_arr = (char**)malloc(arr_size * sizeof(char*));
+    char** names_arr = (char**)malloc(size * sizeof(char*));
     for (int i = 0; temp != NULL; i++) {
         names_arr[i] = mx_strdup(temp->name);
         temp = temp->parent;
     }
 
     mx_printstr("Route: ");
-    for (int i = arr_size - 1; i >= 0; i--) {
+    for (int i = size - 1; i >= 0; i--) {
         mx_printstr(names_arr[i]);
         if (i - 1 >= 0) {
             mx_printstr(" -> ");
         }
     }
+}
 
-    if (arr_size == 2) {
+
+static void print_distance(t_node *node) {
+    int size = 0;
+    t_node* temp = node;
+    for (; temp != NULL; size++) {
+        temp = temp->parent;
+    }
+    
+    if (size == 2) {
         mx_printstr("\nDistance: ");
         mx_printint(node->len_to_parent);
     }
@@ -54,13 +64,13 @@ static void print_path(t_node* node) {
         mx_printstr("\nDistance: ");
 
         temp = node;
-        int* int_arr = (int*)malloc(arr_size * sizeof(int));
+        int* int_arr = (int*)malloc(size * sizeof(int));
         for (int i = 0; temp != NULL; i++) {
             int_arr[i] = temp->len_to_parent;
             temp = temp->parent;
         }
 
-        for (int i = arr_size - 2; i >= 0; i--) {
+        for (int i = size - 2; i >= 0; i--) {
             mx_printint(int_arr[i]);
             if (i - 1 >= 0) {
                 mx_printstr(" + ");
@@ -68,7 +78,7 @@ static void print_path(t_node* node) {
         }
         mx_printstr(" = ");
         int sum = 0;
-        for (int i = 0; i < arr_size - 1; i++) {
+        for (int i = 0; i < size - 1; i++) {
             sum += int_arr[i];
         }
         mx_printint(sum);
@@ -76,12 +86,17 @@ static void print_path(t_node* node) {
     mx_printstr("\n========================================\n");
 }
 
+static void print_path(t_node* node) {
+    print_from_to(node);
+    print_route(node);
+    print_distance(node);
+}
+
 
 void print_result(t_node** res, int size, char** islands) {
-
-    t_node** res_temp = (t_node**)malloc(size * sizeof(t_node*));
+    t_node** result = (t_node**)malloc(size * sizeof(t_node*));
     for (int i = 0; i < size; i++) {
-        res_temp[i] = NULL;
+        result[i] = NULL;
     }
 
     int h = 0;
@@ -89,25 +104,26 @@ void print_result(t_node** res, int size, char** islands) {
 
     for (int i = 0; res[i] != NULL; i++) {
         for (int j = 0; res[j] != NULL; j++) {
-            t_node* temp_2 = res[j];
             t_node* temp = res[i];
+            t_node* temp2 = res[j];
+
             if (i != j) {
-                if (!mx_compare_paths(temp, temp_2, res_temp)) {
+                if (!mx_compare_paths(temp, temp2, result)) {
                     add = false;
                     break;
                 }
             }
         }
         if (add == true) {
-            res_temp[h] = res[i];
+            result[h] = res[i];
             h++;
         }
         add = true;
     }
 
-    sort_paths(res_temp, islands);
-    for (int i = 0; res_temp[i] != NULL; i++) {
-        print_path(res_temp[i]);
+    sort_paths(result, islands);
+    for (int i = 0; result[i] != NULL; i++) {
+        print_path(result[i]);
     }
 }
 
