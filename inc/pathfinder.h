@@ -1,10 +1,10 @@
 #ifndef PATHFINDER_H
 #define PATHFINDER_H
 
-#include "libmx.h"
+#include "../libmx/inc/libmx.h"
 #include <limits.h>
 
-//received_from_file
+//received from file
 typedef struct s_bridge {
     char *point1;
     char *point2;
@@ -15,7 +15,7 @@ typedef struct s_bridge {
 //graph
 typedef struct s_node { 
     int len_to_parent;
-    int all_way;
+    int all_dist;
     char* name;
     struct s_node* parent;
 }              t_node;
@@ -32,7 +32,7 @@ void find_and_print_paths(char **islands, int **adjacency_matrix, int islands_co
 
 //output
 void print_result(t_node** res, int size, char** islands);
-bool mx_compare_paths(t_node* node1, t_node* node2, t_node** res_temp);
+bool cmppaths(t_node* node1, t_node* node2, t_node** res_temp);
 void sort_paths(t_node** paths, char** islands);
 
 //queue

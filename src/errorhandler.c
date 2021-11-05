@@ -1,4 +1,4 @@
-#include "pathfinder.h"
+#include "../inc/pathfinder.h"
 
 char* errorhandler(int argc, char *argv[], int *islands_count, int *bridges_count) {
 	// invalid number of arguments
@@ -104,7 +104,6 @@ char* errorhandler(int argc, char *argv[], int *islands_count, int *bridges_coun
 					mx_printerr("error: line ");
 					mx_printerr(mx_itoa(i + 2));
 					mx_printerr(" is not valid\n");
-
 					exit(0);
 				}
 			}

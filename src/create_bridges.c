@@ -1,6 +1,6 @@
-#include "pathfinder.h"
+#include "../inc/pathfinder.h"
 
-static t_bridge* mx_create_bridge(char *island1, char *island2, int length) {
+static t_bridge* create_bridge(char *island1, char *island2, int length) {
     if (!island1 || !island2) {
         return NULL;
     }
@@ -19,8 +19,8 @@ static t_bridge* mx_create_bridge(char *island1, char *island2, int length) {
     return node;
 }
 
-static void mx_push_back_bridge(t_bridge **list, char *island1, char *island2, int length) {
-    t_bridge* back = mx_create_bridge(island1, island2, length);
+static void push_back_bridge(t_bridge **list, char *island1, char *island2, int length) {
+    t_bridge* back = create_bridge(island1, island2, length);
     t_bridge* temp = NULL;
 
     if (!list || !(*list)) {
@@ -72,7 +72,7 @@ t_bridge *create_bridges(char *file) {
         }
         lenght = mx_strncpy(mx_strnew(count) , &lines[n][i - count], count);
 
-        mx_push_back_bridge(&bridges, island1, island2, mx_atoi(lenght));
+        push_back_bridge(&bridges, island1, island2, mx_atoi(lenght));
     }
 
     return bridges;

@@ -1,9 +1,9 @@
-#include "pathfinder.h"
+#include "../inc/pathfinder.h"
 
-static t_node* new_node(int len_to_parent, int all_way, char* name) {
+static t_node* new_node(int len_to_parent, int all_dist, char* name) {
     t_node* temp = (t_node*)malloc(sizeof(t_node));
     temp->len_to_parent = len_to_parent;
-    temp->all_way = all_way;
+    temp->all_dist = all_dist;
     temp->name = mx_strdup(name);
     temp->parent = NULL;
 
@@ -13,9 +13,6 @@ static t_node* new_node(int len_to_parent, int all_way, char* name) {
 static t_node** generate_successors(int** arr, t_node* parent, char** islands, int islands_num) {
     int index = 0;
     for (; mx_strcmp(islands[index], parent->name) != 0; index++);
-   
-    // int islands_num = 0;
-    // for (; islands[islands_num] != NULL; islands_num++);
 
     t_node** successors = (t_node**)malloc((islands_num) * sizeof(t_node*));
     for (int i = 0; i < islands_num; i++) {
@@ -41,7 +38,7 @@ static t_node** generate_successors(int** arr, t_node* parent, char** islands, i
                 break;
             }
             if (was == false)
-                successors[i] = new_node(arr[index][i], parent->all_way + arr[index][i], islands[i]);
+                successors[i] = new_node(arr[index][i], parent->all_dist + arr[index][i], islands[i]);
         }
     }
 
@@ -68,17 +65,39 @@ static t_node** generate_successors(int** arr, t_node* parent, char** islands, i
     return successors_res;
 }
 
+static bool is_in_open_queue(t_queue *open_queue, t_node **successors, int index) {
+    while (open_queue != NULL) {
+        if (mx_strcmp(open_queue->node->name, successors[index]->name) == 0) {
+            if (open_queue->node->all_dist < successors[index]->all_dist) {
+                return true;
+            }
+        }
+        open_queue = open_queue->next;
+    }
+    return false;
+}
+
+static bool is_in_close_queue(t_queue *close_queue, t_node **successors, int index) {
+    while (close_queue != NULL) {
+        if (mx_strcmp(close_queue->node->name, successors[index]->name) == 0) {
+            if (close_queue->node->all_dist < successors[index]->all_dist) {
+                return true;
+            }
+        }
+        close_queue = close_queue->next;
+    }
+    return false;
+
+}
+
 // A* algorithm from https://www.geeksforgeeks.org/a-search-algorithm/
-static t_node** a_star(int** arr, char** islands, int islands_num, int from, int to) {
+static t_node** a_star(int** matrix, char** islands, int islands_num, int from, int to) {
     
-    t_node* way = new_node(0, 0, islands[from]);    
-    t_queue* queue = newNode(way);
-    t_queue* queue_close = newNode(way);
+    t_node* p_node = new_node(0, 0, islands[from]);    
+    t_queue* open_queue = newNode(p_node);
+    t_queue* close_queue = newNode(p_node);
 
-    // int islands_num = 0;
-    // for (; islands[islands_num] != NULL; islands_num++);
-
-    t_node** paths = (t_node**)malloc(mx_pow(islands_num, 2) * sizeof(t_node*));
+    t_node** paths = (t_node**)malloc((islands_num * islands_num) * sizeof(t_node*));
     for (int i = 0; i < islands_num; i++) {
         paths[i] = (t_node*)malloc(sizeof(t_node));
         paths[i] = NULL;
@@ -87,16 +106,17 @@ static t_node** a_star(int** arr, char** islands, int islands_num, int from, int
     int paths_index = 0;
     int check = 0;
 
-    while (!isEmpty(&queue)) {
+    while (!isEmpty(&open_queue)) {
         check++;
-        way = queue->node;
-        pop(&queue);
+        p_node = open_queue->node;
+        pop(&open_queue);
 
-        t_node* temp = way;
+        t_node* temp = p_node;
         int j = 0;
         for (; temp->parent != NULL; j++) {
-            if (j > islands_num)
+            if (j > islands_num) {
                 break;
+            }
             temp = temp->parent;
         }
         if (j >= islands_num) {
@@ -104,8 +124,8 @@ static t_node** a_star(int** arr, char** islands, int islands_num, int from, int
         }
 
         bool in_islands = false;
-        for (int h = 0; h < islands_num; h++) {
-            if (mx_strcmp(way->name, islands[h]) == 0) {
+        for (int i = 0; i < islands_num; i++) {
+            if (mx_strcmp(p_node->name, islands[i]) == 0) {
                 in_islands = true;
             }
         }
@@ -113,9 +133,9 @@ static t_node** a_star(int** arr, char** islands, int islands_num, int from, int
             continue;
         }
 
-        t_node** successors = generate_successors(arr, way, islands, islands_num);
+        t_node** successors = generate_successors(matrix, p_node, islands, islands_num);
         for (int i = 0; successors[i] != NULL; i++) {
-            successors[i]->parent = way;
+            successors[i]->parent = p_node;
         }
 
         for (int i = 0; successors[i] != NULL; i++) {
@@ -124,33 +144,10 @@ static t_node** a_star(int** arr, char** islands, int islands_num, int from, int
                 paths_index++;
             }
 
-            t_queue* temp_queue = queue;
-            bool in_queue = false;
-            while (temp_queue != NULL) {
-                if (mx_strcmp(temp_queue->node->name, successors[i]->name) == 0) {
-                    if (temp_queue->node->all_way < successors[i]->all_way) {
-                        in_queue = true;
-                        break;
-                    }
-                }
-                temp_queue = temp_queue->next;
-            }
-
-            bool in_cose_queue = false;
-            t_queue* queue_close_temp = queue_close;
-            while (queue_close_temp != NULL) {
-                if (mx_strcmp(queue_close_temp->node->name, successors[i]->name) == 0) {
-                    if (queue_close_temp->node->all_way < successors[i]->all_way) {
-                        in_cose_queue = true;
-                        break;
-                    }
-                }
-                queue_close_temp = queue_close_temp->next;
-            }
-
-            if (in_queue == false && in_cose_queue == false) {
-                push(&queue, successors[i]);
-                push(&queue_close, successors[i]);
+            if (!(is_in_open_queue(open_queue, successors, i)) 
+             && !(is_in_close_queue(close_queue, successors, i))) {
+                push(&open_queue, successors[i]);
+                push(&close_queue, successors[i]);
             }
         }
     }

@@ -1,4 +1,4 @@
-#include "pathfinder.h"
+#include "../inc/pathfinder.h"
 
 static bool is_island_present(char** islands, int size, char* point) {
 	for (int i = 0; i < size; i++) {

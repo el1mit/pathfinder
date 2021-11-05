@@ -1,4 +1,4 @@
-#include "pathfinder.h"
+#include "../inc/pathfinder.h"
 
 static char** from_to(t_node* node) {
     char** result = (char**)malloc(2 * sizeof(char*));
@@ -17,7 +17,6 @@ static char** from_to(t_node* node) {
 
 static void print_from_to(t_node *node) {
     char **names = from_to(node);
-    mx_printstr("========================================\n");
     mx_printstr("Path: ");
     mx_printstr(names[1]);
     mx_printstr(" -> ");
@@ -83,13 +82,14 @@ static void print_distance(t_node *node) {
         }
         mx_printint(sum);
     }
-    mx_printstr("\n========================================\n");
 }
 
 static void print_path(t_node* node) {
+    mx_printstr("========================================\n");
     print_from_to(node);
     print_route(node);
     print_distance(node);
+    mx_printstr("\n========================================\n");
 }
 
 
@@ -108,7 +108,7 @@ void print_result(t_node** res, int size, char** islands) {
             t_node* temp2 = res[j];
 
             if (i != j) {
-                if (!mx_compare_paths(temp, temp2, result)) {
+                if (!cmppaths(temp, temp2, result)) {
                     add = false;
                     break;
                 }

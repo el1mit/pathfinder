@@ -1,4 +1,4 @@
-#include "pathfinder.h"
+#include "../inc/pathfinder.h"
 
 static char** from_to(t_node* node) {
     char** result = (char**)malloc(2 * sizeof(char*));

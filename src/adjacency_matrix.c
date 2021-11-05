@@ -1,4 +1,4 @@
-#include "pathfinder.h"
+#include "../inc/pathfinder.h"
 
 static int island_number(char** islands, int size, char* name) {
 	for (int i = 0; i < size; i++) {
